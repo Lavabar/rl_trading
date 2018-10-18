@@ -1,2 +1,4 @@
 *.csv
 AV_token.txt
+data/
+.vscode/
