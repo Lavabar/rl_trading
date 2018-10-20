@@ -1,7 +1,7 @@
 import time
 import threading
-import os
-os.path.join("../")
+import sys
+sys.path.append("../")
 
 from MyWrapper import MyWrapper
 from ibapi.client import EClient
@@ -25,6 +25,6 @@ if tws.isConnected():
 
     # disconnection procedure
     tws.done = True
-    while tws.done and not tws.wrapper.end_work_with_tws:
+    while tws.done and not tws.wrapper.end_work_with_TWS:
         print("Waiting for terminal switching off")
         time.sleep(0.5)
