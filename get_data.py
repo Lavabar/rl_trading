@@ -15,8 +15,10 @@ import argparse
 with open("AV_token.txt", "r") as f:
     api_key = f.readline()
 
-functions = ["TIME_SERIES_INTRADAY", "TIME_SERIES_DAILY", "TIME_SERIES_DAILY_ADJUSTED",
-"TIME_SERIES_WEEKLY", "TIME_SERIES_WEEKLY_ADJUSTED", "TIME_SERIES_MONTHLY", "TIME_SERIES_MONTHLY_ADJUSTED"]
+functions = ["TIME_SERIES_INTRADAY", "TIME_SERIES_DAILY", 
+    "TIME_SERIES_DAILY_ADJUSTED","TIME_SERIES_WEEKLY", 
+    "TIME_SERIES_WEEKLY_ADJUSTED", "TIME_SERIES_MONTHLY", 
+    "TIME_SERIES_MONTHLY_ADJUSTED"]
 
 save_path = "data/"
 
@@ -32,7 +34,8 @@ def checking_args(function, symbol):
         raise NameError
 
     # checking symbol through another request(search request)
-    req = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + symbol + "&apikey=" + api_key + "&datatype=csv"
+    req = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + \
+                                symbol + "&apikey=" + api_key + "&datatype=csv"
     data = requests.get(req)
     reader = csv.reader(data.text.splitlines())
     
@@ -58,9 +61,12 @@ def checking_args(function, symbol):
 if __name__ == "__main__":
     # parsing arguments through argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--foo', type=str, required=True, help='str fmt = \"TIME_SERIES_[your mode]\"')
-    parser.add_argument('-F', '--file', type=str, required=True, help='just type the name of file wuth csv extension')
-    parser.add_argument('-s', '--symbol', type=str, required=True, help='string code of company(example:\"MSFT\")')
+    parser.add_argument('-f', '--foo', type=str, required=True, \
+                    help='str fmt = \"TIME_SERIES_[your mode]\"')
+    parser.add_argument('-F', '--file', type=str, required=True, \
+                    help='just type the name of file wuth csv extension')
+    parser.add_argument('-s', '--symbol', type=str, required=True, \
+                    help='string code of company(example:\"MSFT\")')
 
     args = parser.parse_args()
 
@@ -75,9 +81,11 @@ if __name__ == "__main__":
 
     # making request
     if function == "TIME_SERIES_DAILY" or function == "TIME_SERIES_INTRADAY":
-        req = "https://www.alphavantage.co/query?function=" + function + "&symbol=" + symbol + "&apikey=" + api_key + "&datatype=csv&outputsize=full"
+        req = "https://www.alphavantage.co/query?function=" + function + \
+            "&symbol=" + symbol + "&apikey=" + api_key + "&datatype=csv&outputsize=full"
     else:
-        req = "https://www.alphavantage.co/query?function=" + function + "&symbol=" + symbol + "&apikey=" + api_key + "&datatype=csv"
+        req = "https://www.alphavantage.co/query?function=" + function + \
+            "&symbol=" + symbol + "&apikey=" + api_key + "&datatype=csv"
     data = requests.get(req)
 
     # reading response and writing to the file
