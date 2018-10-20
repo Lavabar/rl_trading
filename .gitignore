@@ -2,3 +2,6 @@
 AV_token.txt
 data/
 .vscode/
+weights/
+portfolio_val/
+__pycache__/
