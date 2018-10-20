@@ -5,9 +5,16 @@ sys.path.append("../")
 
 from MyWrapper import MyWrapper
 from ibapi.client import EClient
+from ibapi.contract import Contract
 
 # two base classes for working with tws API
 tws = EClient(MyWrapper())
+
+cnt = Contract()
+cnt.symbol = "IBKR,MCD"
+cnt.secType = "BAG"
+cnt.currency = "USD"
+cnt.exchange = "SMART"
 
 # connecting to tws(it should be launched beforehand)
 # localhost:7497, clientID = 1
@@ -21,7 +28,12 @@ if tws.isConnected():
     tws.th.join(timeout=5)
 
     # waiting for messages from tws
-    time.sleep(10)
+    while tws.wrapper.nvid == 0:                            # Пока TWS не прислал Next Valid ID
+        time.sleep(.5)                                      # Спим полсекунды
+    
+    tws.reqContractDetails(tws.wrapper.nvid, cnt)           # Запрашиваем все необходимые данные по контракту
+    while not tws.wrapper.con_detail_recive:                # Ждем получение ...
+        time.sleep(.2) 
 
     # disconnection procedure
     tws.done = True
