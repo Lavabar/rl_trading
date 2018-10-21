@@ -16,15 +16,6 @@ cnt.secType = "STK"
 cnt.currency = "USD"
 cnt.exchange = "SMART"
 
-leg1 = ComboLeg()
-leg1.conId = 265598
-leg1.ratio = 100
-leg1.action = "BUY"
-leg1.exchange = "SMART"
-
-cnt.comboLegs = []
-cnt.comboLegs.append(leg1)
-
 # connecting to tws(it should be launched beforehand)
 # localhost:7497, clientID = 1
 tws.connect("127.0.0.1", 7497, 1)

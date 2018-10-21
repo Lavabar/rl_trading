@@ -20,14 +20,14 @@ def get_scaler(env):
   low = [0] * (env.n_stock * 2 + 1)
 
   high = []
-  max_price = env.stock_price_history.max(axis=1)
-  min_price = env.stock_price_history.min(axis=1)
-  max_cash = env.init_invest * 3 # 3 is a magic number...
+  max_price = 2000
+  min_price = 100
+  max_cash = env.real_cash # 3 is a magic number...
   max_stock_owned = max_cash // min_price
-  for i in max_stock_owned:
-    high.append(i)
-  for i in max_price:
-    high.append(i)
+  for i in range(env.n_stock):
+    high.append(max_stock_owned)
+  for i in range(env.n_stock):
+    high.append(max_price)
   high.append(max_cash)
 
   scaler = StandardScaler()

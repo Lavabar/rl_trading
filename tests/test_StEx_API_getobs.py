@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     ## get the account name from the position
     ## normally you would know your account name
-    accountName = positions_list[1][0]
+    accountName = positions_list[0][0]
 
     ## and accounting information
     accounting_values = app.get_accounting_values(accountName)
@@ -28,6 +28,9 @@ if __name__ == '__main__':
     ## these values are cached
     ## if we ask again in more than 5 minutes it will update everything
     accounting_updates = app.get_accounting_updates(accountName)
-    print(accounting_updates)
+    print(accounting_updates[0][1])
+    print(len(accounting_updates))
+    stock_owned = [accounting_updates[j][1] for j in range(3)]
+    print(stock_owned)
 
 app.disconnect()

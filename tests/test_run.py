@@ -1,3 +1,6 @@
+import sys
+sys.path.append("../")
+
 import pickle
 import time
 import numpy as np
@@ -25,15 +28,15 @@ if __name__ == '__main__':
     # when test, the timestamp is same as time when weights was trained
     timestamp = re.findall(r'\d{12}', weights)[0]
 
-
-while True:
     state = env.update()
     scaler = get_scaler(env)
+    state = scaler.transform([state])
     print(state)
-    state = scaler.transform([state])       
-    action = agent.act(state)
-    reward, done, info = env.step(action)
-    if done:
-        reward, done, info = env.step(0) # sell all  
-        break
-    time.sleep(3600 * 24)
+    
+    reward, done, info = env.step(0)
+    
+'''    action = agent.act(state)
+    next_state, reward, done, info = env.step(action)
+    print(next_state)
+    next_state = scaler.transform([next_state])
+    print(next_state)'''
