@@ -56,7 +56,7 @@ class TradingEnv(gym.Env):
     self.stock_owned = [0] * self.n_stock
     self.stock_price = self.stock_price_history[:, self.cur_step]
     self.cash_in_hand = self.init_invest
-    return self._get_obs()
+    return self.get_obs()
 
 
   def step(self, action):
@@ -69,10 +69,10 @@ class TradingEnv(gym.Env):
     reward = cur_val - prev_val
     done = self.cur_step == self.n_step - 1
     info = {'cur_val': cur_val}
-    return self._get_obs(), reward, done, info
+    return self.get_obs(), reward, done, info
 
 
-  def _get_obs(self):
+  def get_obs(self):
     obs = []
     obs.extend(self.stock_owned)
     obs.extend(list(self.stock_price))
@@ -88,7 +88,7 @@ class TradingEnv(gym.Env):
     # all combo to sell(0), hold(1), or buy(2) stocks
     action_combo = list(map(list, itertools.product([0, 1, 2], repeat=self.n_stock)))
     action_vec = action_combo[action]
-
+    #print(action_vec)
     # one pass to get sell/buy index
     sell_index = []
     buy_index = []

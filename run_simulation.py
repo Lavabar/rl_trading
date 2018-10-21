@@ -35,7 +35,7 @@ if __name__ == '__main__':
   env = TradingEnv(train_data, args.initial_invest)
   state_size = env.observation_space.shape
   action_size = env.action_space.n
-  agent = DQNAgent(state_size, action_size)
+  agent = DQNAgent(state_size, action_size, args.mode)
   scaler = get_scaler(env)
 
   portfolio_value = []
@@ -53,6 +53,9 @@ if __name__ == '__main__':
     state = scaler.transform([state])
     for time in range(env.n_step):
       action = agent.act(state)
+      #print(env.get_obs())
+      #print(action)
+      #input()
       next_state, reward, done, info = env.step(action)
       next_state = scaler.transform([next_state])
       if args.mode == 'train':

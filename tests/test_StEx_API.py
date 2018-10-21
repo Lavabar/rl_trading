@@ -5,16 +5,25 @@ sys.path.append("../")
 
 from MyWrapper import MyWrapper
 from ibapi.client import EClient
-from ibapi.contract import Contract
+from ibapi.contract import Contract, ComboLeg
 
 # two base classes for working with tws API
 tws = EClient(MyWrapper())
 
 cnt = Contract()
-cnt.symbol = "IBKR,MCD"
-cnt.secType = "BAG"
+cnt.symbol = "AAPL"
+cnt.secType = "STK"
 cnt.currency = "USD"
 cnt.exchange = "SMART"
+
+leg1 = ComboLeg()
+leg1.conId = 265598
+leg1.ratio = 100
+leg1.action = "BUY"
+leg1.exchange = "SMART"
+
+cnt.comboLegs = []
+cnt.comboLegs.append(leg1)
 
 # connecting to tws(it should be launched beforehand)
 # localhost:7497, clientID = 1
