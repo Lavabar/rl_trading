@@ -1,3 +1,7 @@
+"""
+source: https://github.com/llSourcell/Q-learning-for-trading.git
+"""
+
 import gym
 from gym import spaces
 from gym.utils import seeding
