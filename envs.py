@@ -11,7 +11,7 @@ import itertools
 
 class TradingEnv(gym.Env):
   """
-  A 3-stock (MSFT, IBM, QCOM) trading environment.
+  A 3-stock (AAPL, IBM, MSFT) trading environment.
 
   State: [# of stock owned, current stock prices, cash in hand]
     - array of length n_stock * 2 + 1
@@ -111,7 +111,7 @@ class TradingEnv(gym.Env):
       can_buy = True
       while can_buy:
         for i in buy_index:
-          if self.cash_in_hand > self.stock_price[i]:
+          if (self.cash_in_hand // len(buy_index)) > self.stock_price[i]:
             self.stock_owned[i] += 1 # buy one share
             self.cash_in_hand -= self.stock_price[i]
           else:

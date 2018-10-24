@@ -83,9 +83,12 @@ if __name__ == "__main__":
     if function == "TIME_SERIES_DAILY" or function == "TIME_SERIES_INTRADAY":
         req = "https://www.alphavantage.co/query?function=" + function + \
             "&symbol=" + symbol + "&apikey=" + api_key + "&datatype=csv&outputsize=full"
+        if function == "TIME_SERIES_INTRADAY":
+            req += "&interval=" + input("Choose interval(1 or 5): ") + "min"
     else:
         req = "https://www.alphavantage.co/query?function=" + function + \
             "&symbol=" + symbol + "&apikey=" + api_key + "&datatype=csv"
+    print(req)
     data = requests.get(req)
 
     # reading response and writing to the file
