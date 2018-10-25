@@ -29,8 +29,8 @@ if __name__ == '__main__':
   timestamp = time.strftime('%Y%m%d%H%M')
 
   data = np.around(get_data())
-  train_data = data[:, :3526]
-  test_data = data[:, 3526:]
+  train_data = data[:, :580]
+  test_data = data[:, 580:]
 
   env = TradingEnv(train_data, args.initial_invest)
   state_size = env.observation_space.shape

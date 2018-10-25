@@ -22,7 +22,7 @@ def get_scaler(env):
   high = []
   max_price = 2000
   min_price = 100
-  max_cash = env.real_cash # 3 is a magic number...
+  max_cash = env.real_cash
   max_stock_owned = max_cash // min_price
   for i in range(env.n_stock):
     high.append(max_stock_owned)

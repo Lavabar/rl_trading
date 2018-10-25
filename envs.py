@@ -7,7 +7,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import itertools
-
+import model
 
 class TradingEnv(gym.Env):
   """
@@ -46,6 +46,10 @@ class TradingEnv(gym.Env):
     cash_in_hand_range = [[0, init_invest * 2]]
     self.observation_space = spaces.MultiDiscrete(stock_range + price_range + cash_in_hand_range)
     # seed and start
+
+    self.history = np.zeros((10, 3,))
+    self.model_hist_est = model.lstm((10, 3,))
+
     self._seed()
     self.reset()
 
@@ -56,9 +60,11 @@ class TradingEnv(gym.Env):
 
 
   def reset(self):
-    self.cur_step = 0
+    self.cur_step = 9
     self.stock_owned = [0] * self.n_stock
     self.stock_price = self.stock_price_history[:, self.cur_step]
+    self.history.T[:, :self.cur_step] = self.stock_price_history[:, :self.cur_step]
+    self.history[self.cur_step, :] = self.stock_price[:]
     self.cash_in_hand = self.init_invest
     return self.get_obs()
 
@@ -68,6 +74,8 @@ class TradingEnv(gym.Env):
     prev_val = self._get_val()
     self.cur_step += 1
     self.stock_price = self.stock_price_history[:, self.cur_step] # update price
+    self.history = np.roll(self.history, shift=-1, axis=0)
+    self.history[self.history.shape[0] - 1, :] = self.stock_price[:]
     self._trade(action)
     cur_val = self._get_val()
     reward = cur_val - prev_val
@@ -81,6 +89,8 @@ class TradingEnv(gym.Env):
     obs.extend(self.stock_owned)
     obs.extend(list(self.stock_price))
     obs.append(self.cash_in_hand)
+    history_estimate = 
+    obs.append(history_estimate)
     return obs
 
 
@@ -111,7 +121,7 @@ class TradingEnv(gym.Env):
       can_buy = True
       while can_buy:
         for i in buy_index:
-          if (self.cash_in_hand // len(buy_index)) > self.stock_price[i]:
+          if self.cash_in_hand > self.stock_price[i]:
             self.stock_owned[i] += 1 # buy one share
             self.cash_in_hand -= self.stock_price[i]
           else:
