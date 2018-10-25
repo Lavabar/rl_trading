@@ -22,13 +22,15 @@ if __name__ == '__main__':
                       help='either "train" or "test"')
   parser.add_argument('-w', '--weights', type=str, help='a trained model weights')
   args = parser.parse_args()
+  args.mode = "train"
 
   maybe_make_dir('weights')
   maybe_make_dir('portfolio_val')
 
   timestamp = time.strftime('%Y%m%d%H%M')
 
-  data = np.around(get_data())
+  #data = np.around(get_data())
+  data = get_data()
   train_data = data[:, :580]
   test_data = data[:, 580:]
 
@@ -53,9 +55,7 @@ if __name__ == '__main__':
     state = scaler.transform([state])
     for time in range(env.n_step):
       action = agent.act(state)
-      #print(env.get_obs())
-      #print(action)
-      #input()
+
       next_state, reward, done, info = env.step(action)
       next_state = scaler.transform([next_state])
       if args.mode == 'train':

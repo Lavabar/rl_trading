@@ -24,7 +24,7 @@ class TradingEnv(gym.Env):
     - when buying, buy as many as cash in hand allows
     - if buying multiple stock, equally distribute cash in hand and then utilize the balance
   """
-  def __init__(self, train_data, init_invest=20000):
+  def __init__(self, train_data, init_invest=20000, price_history_length=10):
     # data
     self.stock_price_history = np.around(train_data) # round up to integer to reduce state space
     self.n_stock, self.n_step = self.stock_price_history.shape
@@ -47,8 +47,12 @@ class TradingEnv(gym.Env):
     self.observation_space = spaces.MultiDiscrete(stock_range + price_range + cash_in_hand_range)
     # seed and start
 
-    self.history = np.zeros((10, 3,))
-    self.model_hist_est = model.lstm((10, 3,))
+    self.hist_length = price_history_length
+    self.history = np.zeros((1, self.hist_length, self.n_stock))
+    
+    ###TO-FIX
+    self.model_hist_est = model.lstm((self.hist_length, 1,))
+    ###TO-FIX
 
     self._seed()
     self.reset()
@@ -60,11 +64,13 @@ class TradingEnv(gym.Env):
 
 
   def reset(self):
-    self.cur_step = 9
+    self.cur_step = self.hist_length - 1
     self.stock_owned = [0] * self.n_stock
     self.stock_price = self.stock_price_history[:, self.cur_step]
-    self.history.T[:, :self.cur_step] = self.stock_price_history[:, :self.cur_step]
-    self.history[self.cur_step, :] = self.stock_price[:]
+    
+    self.history[0, :self.cur_step] = self.stock_price_history.T[:self.cur_step, :]
+    self.history[0, self.cur_step] = self.stock_price
+    
     self.cash_in_hand = self.init_invest
     return self.get_obs()
 
@@ -74,8 +80,10 @@ class TradingEnv(gym.Env):
     prev_val = self._get_val()
     self.cur_step += 1
     self.stock_price = self.stock_price_history[:, self.cur_step] # update price
-    self.history = np.roll(self.history, shift=-1, axis=0)
-    self.history[self.history.shape[0] - 1, :] = self.stock_price[:]
+
+    self.history = np.roll(self.history, shift=-1, axis=1)
+    self.history[0, self.history.shape[0] - 1] = self.stock_price
+    
     self._trade(action)
     cur_val = self._get_val()
     reward = cur_val - prev_val
@@ -89,13 +97,22 @@ class TradingEnv(gym.Env):
     obs.extend(self.stock_owned)
     obs.extend(list(self.stock_price))
     obs.append(self.cash_in_hand)
-    history_estimate = 
-    obs.append(history_estimate)
+    history_estimate = self._get_estimation()
+    obs.extend(history_estimate)
     return obs
 
 
   def _get_val(self):
     return np.sum(self.stock_owned * self.stock_price) + self.cash_in_hand
+
+
+  def _get_estimation(self):
+    X_set = np.split(self.history, self.n_stock, axis=2)
+    res = []
+    for X in X_set:
+      res.append(self.model_hist_est.predict(X))
+    
+    return res
 
 
   def _trade(self, action):

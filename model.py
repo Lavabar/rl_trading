@@ -16,16 +16,13 @@ def mlp(n_obs, n_action, n_hidden_layer=1, n_neuron_per_layer=64,
   print(model.summary())
   return model
 
-def lstm(inp_sh, outp_sh = 2, n_hidden_layer=2, n_neuron_per_layer=32,
-        activation='tanh', loss='mae'):
+def lstm(inp_sh):
   model = Sequential()
-  model.add(LSTM(n_neuron_per_layer, return_sequences=True, dropout=0.2, recurrent_dropout=0.2,
-          input_shape=inp_sh)
-  for i in range(n_hidden_layer):  
-    model.add(LSTM(n_neuron_per_layer, return_sequences=True, dropout=0.2, recurrent_dropout=0.2)
+  model.add(LSTM(32, return_sequences=True, dropout=0.2, recurrent_dropout=0.2, input_shape=(10, 1,)))
+  model.add(LSTM(16, dropout=0.2, recurrent_dropout=0.2))
+  model.add(Dense(1, activation='tanh'))
+  model.compile(loss='mae', optimizer=RMSprop(), metrics=['mae'])
 
-  model.add(Dense(outp_sh, activation=activation))
-
-  model.compile(loss=loss, optimizer=RMSprop(), metrics=['mse'])
+  print(model.summary())
 
   return model
