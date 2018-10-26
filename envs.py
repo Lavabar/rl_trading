@@ -24,7 +24,7 @@ class TradingEnv(gym.Env):
     - when buying, buy as many as cash in hand allows
     - if buying multiple stock, equally distribute cash in hand and then utilize the balance
   """
-  def __init__(self, train_data, init_invest=20000, price_history_length=10):
+  def __init__(self, train_data, init_invest=2000, price_history_length=10):
     # data
     self.stock_price_history = np.around(train_data) # round up to integer to reduce state space
     self.n_stock, self.n_step = self.stock_price_history.shape
@@ -43,16 +43,15 @@ class TradingEnv(gym.Env):
     stock_max_price = self.stock_price_history.max(axis=1)
     stock_range = [[0, init_invest * 2 // mx] for mx in stock_max_price]
     price_range = [[0, mx] for mx in stock_max_price]
+    estimates_range = [[-1.0, 1.0] for i in range(self.n_stock)]
     cash_in_hand_range = [[0, init_invest * 2]]
-    self.observation_space = spaces.MultiDiscrete(stock_range + price_range + cash_in_hand_range)
+    self.observation_space = spaces.MultiDiscrete(stock_range + price_range + cash_in_hand_range + estimates_range)
     # seed and start
 
     self.hist_length = price_history_length
     self.history = np.zeros((1, self.hist_length, self.n_stock))
     
-    ###TO-FIX
-    self.model_hist_est = model.lstm((self.hist_length, 1,))
-    ###TO-FIX
+    self.model_hist_est = self._load_est()
 
     self._seed()
     self.reset()
@@ -109,17 +108,30 @@ class TradingEnv(gym.Env):
   def _get_estimation(self):
     X_set = np.split(self.history, self.n_stock, axis=2)
     res = []
-    for X in X_set:
-      res.append(self.model_hist_est.predict(X))
+    for i in range(len(X_set)):
+      res.append(self.model_hist_est[i].predict(X_set[i]))
     
     return res
 
+  
+  def _load_est(self):
+    direct = "est_models/"
+    f_names = ["aapl", "ibm", "msft"]
+    ext = ".weights"
+    models = []
+    for i in range(self.n_stock):
+      tmp_model = model.lstm(self.history.shape)
+      tmp_model.load_weights(direct + f_names[i] + ext)
+      models.append(tmp_model)
+
+    return models
 
   def _trade(self, action):
     # all combo to sell(0), hold(1), or buy(2) stocks
     action_combo = list(map(list, itertools.product([0, 1, 2], repeat=self.n_stock)))
     action_vec = action_combo[action]
-    #print(action_vec)
+    print(action_vec)
+    input()
     # one pass to get sell/buy index
     sell_index = []
     buy_index = []

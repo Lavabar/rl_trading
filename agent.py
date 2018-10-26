@@ -15,7 +15,7 @@ class DQNAgent(object):
     if mode == "train":
       self.epsilon = 1.0  # exploration rate
     elif mode == "test":
-      self.epsilon = 0.2
+      self.epsilon = 0.0
     self.epsilon_min = 0.01
     self.epsilon_decay = 0.995
     self.model = mlp(state_size, action_size)

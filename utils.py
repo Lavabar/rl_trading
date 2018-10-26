@@ -17,17 +17,21 @@ def get_data(col='close'):
 
 def get_scaler(env):
   """ Takes a env and returns a scaler for its observation space """
-  low = [0] * (env.n_stock * 2 + 1)
+  low = [0] * (env.n_stock * 2)
+  low.extend([-1, -1, -1])
+  low.append(0)
 
   high = []
   max_price = 2000
   min_price = 100
-  max_cash = env.real_cash
+  #max_cash = env.real_cash ### for testing, not training
+  max_cash = env.init_invest * 3
   max_stock_owned = max_cash // min_price
   for i in range(env.n_stock):
     high.append(max_stock_owned)
   for i in range(env.n_stock):
     high.append(max_price)
+  high.extend([1, 1, 1])
   high.append(max_cash)
 
   scaler = StandardScaler()

@@ -16,13 +16,13 @@ if __name__ == '__main__':
                       help='number of episode to run')
   parser.add_argument('-b', '--batch_size', type=int, default=32,
                       help='batch size for experience replay')
-  parser.add_argument('-i', '--initial_invest', type=int, default=20000,
+  parser.add_argument('-i', '--initial_invest', type=int, default=2000,
                       help='initial investment amount')
   parser.add_argument('-m', '--mode', type=str, default='train',
                       help='either "train" or "test"')
   parser.add_argument('-w', '--weights', type=str, help='a trained model weights')
   args = parser.parse_args()
-  args.mode = "train"
+  #args.mode = "train"
 
   maybe_make_dir('weights')
   maybe_make_dir('portfolio_val')
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         break
       if args.mode == 'train' and len(agent.memory) > args.batch_size:
         agent.replay(args.batch_size)
-    if args.mode == 'train' and (e + 1) % 10 == 0:  # checkpoint weights
+    if args.mode == 'train' and (e + 1) % 2 == 0:  # checkpoint weights
       agent.save('weights/{}-dqn.h5'.format(timestamp))
 
   # save portfolio value history to disk
