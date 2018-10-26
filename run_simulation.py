@@ -29,8 +29,7 @@ if __name__ == '__main__':
 
   timestamp = time.strftime('%Y%m%d%H%M')
 
-  #data = np.around(get_data())
-  data = get_data()
+  data = np.around(get_data()) ### CSV-files must be of one length
   train_data = data[:, :580]
   test_data = data[:, 580:]
 
