@@ -26,7 +26,7 @@ class TradingEnv(gym.Env):
   """
   def __init__(self, train_data, init_invest=2000, price_history_length=10):
     # data
-    self.stock_price_history = np.around(train_data) # round up to integer to reduce state space
+    self.stock_price_history = train_data
     self.n_stock, self.n_step = self.stock_price_history.shape
 
     # instance attributes

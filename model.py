@@ -4,15 +4,19 @@ from keras.optimizers import Adam, RMSprop
 
 
 
-def mlp(n_obs, n_action, n_hidden_layer=1, n_neuron_per_layer=128,
+def mlp(n_obs, n_action, n_hidden_layer=2,
         activation='relu', loss='mse'):
   """ A multi-layer perceptron """
+  
+  n_neuron_per_layer=256
+  
   model = Sequential()
   model.add(Dense(n_neuron_per_layer, input_dim=n_obs[0][0], activation=activation)) ## n_obs[0][0] for training and testing
   for _ in range(n_hidden_layer):
-    model.add(Dense(n_neuron_per_layer, activation=activation))
+    model.add(Dense(n_neuron_per_layer // 2, activation=activation))
+    n_neuron_per_layer = n_neuron_per_layer // 2
   model.add(Dense(n_action, activation='linear'))
-  model.compile(loss=loss, optimizer=Adam())
+  model.compile(loss=loss, optimizer=Adam(lr=0.0001, decay=0.00009))
   print(model.summary())
   return model
 

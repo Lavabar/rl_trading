@@ -14,7 +14,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-e', '--episode', type=int, default=2000,
                       help='number of episode to run')
-  parser.add_argument('-b', '--batch_size', type=int, default=32,
+  parser.add_argument('-b', '--batch_size', type=int, default=64,
                       help='batch size for experience replay')
   parser.add_argument('-i', '--initial_invest', type=int, default=2000,
                       help='initial investment amount')
@@ -30,8 +30,8 @@ if __name__ == '__main__':
   timestamp = time.strftime('%Y%m%d%H%M')
 
   data = np.around(get_data()) ### CSV-files must be of one length
-  train_data = data[:, :580]
-  test_data = data[:, 580:]
+  train_data = data[:, :600]
+  test_data = data[:, 600:]
 
   env = TradingEnv(train_data, args.initial_invest)
   state_size = env.observation_space.shape
