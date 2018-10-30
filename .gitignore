@@ -5,3 +5,4 @@ data/
 weights/
 portfolio_val/
 __pycache__/
+est_models/

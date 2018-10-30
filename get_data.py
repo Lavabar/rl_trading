@@ -3,7 +3,7 @@ In this file we will get neccessary csv-data from Alpha Vantage service
 
 example usage: python3 get_data.py -f TIME_SERIES_DAILY -F msft.csv -s MSFT
 
-downloaded file will appear in "proj_dir/data" directory
+downloaded file will appear in given path with given name
 
 '''
 
@@ -19,8 +19,6 @@ functions = ["TIME_SERIES_INTRADAY", "TIME_SERIES_DAILY",
     "TIME_SERIES_DAILY_ADJUSTED","TIME_SERIES_WEEKLY", 
     "TIME_SERIES_WEEKLY_ADJUSTED", "TIME_SERIES_MONTHLY", 
     "TIME_SERIES_MONTHLY_ADJUSTED"]
-
-save_path = "data/"
 
 def get_bestmatch(res_list):
     max_score = max(res_list[:][1])
@@ -63,7 +61,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', '--foo', type=str, required=True, \
                     help='str fmt = \"TIME_SERIES_[your mode]\"')
-    parser.add_argument('-F', '--file', type=str, required=True, \
+    parser.add_argument('-p', '--path', type=str, required=True, \
                     help='just type the name of file wuth csv extension')
     parser.add_argument('-s', '--symbol', type=str, required=True, \
                     help='string code of company(example:\"MSFT\")')
@@ -71,13 +69,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     function = args.foo
-    csv_file = args.file
+    csv_file = args.path.split("/")[-1]
     symbol = args.symbol
 
     new_symbol = checking_args(function, symbol)
     if new_symbol != "":
         symbol = new_symbol
-    save_path = save_path + csv_file
+    save_path = args.path
 
     # making request
     if function == "TIME_SERIES_DAILY" or function == "TIME_SERIES_INTRADAY":

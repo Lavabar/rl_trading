@@ -4,11 +4,17 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 
-def get_data(col='close'):
+def get_data(mode, col='close'):
   """ Returns a 3 x n_step array """
-  msft = pd.read_csv('data/msft.csv', usecols=[col])
-  aapl = pd.read_csv('data/aapl.csv', usecols=[col])
-  ibm = pd.read_csv('data/ibm.csv', usecols=[col])
+  if mode == "train":
+    msft = pd.read_csv('data/msft.csv', usecols=[col])
+    aapl = pd.read_csv('data/aapl.csv', usecols=[col])
+    ibm = pd.read_csv('data/ibm.csv', usecols=[col])
+  elif mode == "test":
+    msft = pd.read_csv('test_data/msft.csv', usecols=[col])
+    aapl = pd.read_csv('test_data/aapl.csv', usecols=[col])
+    ibm = pd.read_csv('test_data/ibm.csv', usecols=[col])
+
   # recent price are at top; reverse it
   return np.array([msft[col].values[::-1],
                    ibm[col].values[::-1],

@@ -29,9 +29,8 @@ if __name__ == '__main__':
 
   timestamp = time.strftime('%Y%m%d%H%M')
 
-  data = np.around(get_data()) ### CSV-files must be of one length
-  train_data = data[:, :600]
-  test_data = data[:, 600:]
+  train_data = get_data("train") ### CSV-files must be of one length
+  test_data = get_data("test")
 
   env = TradingEnv(train_data, args.initial_invest)
   state_size = env.observation_space.shape
