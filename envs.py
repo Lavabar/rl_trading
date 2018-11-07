@@ -52,7 +52,6 @@ class TradingEnv(gym.Env):
     self.history = np.zeros((1, self.hist_length, self.n_stock))
     
     self.model_hist_est = self._load_est()
-    self.extra_reward = 0.0
 
     self._seed()
     self.reset()
@@ -70,7 +69,7 @@ class TradingEnv(gym.Env):
     
     self.history[0, :self.cur_step] = self.stock_price_history.T[:self.cur_step, :]
     self.history[0, self.cur_step] = self.stock_price
-    self.extra_reward = 0.0    
+    
     self.cash_in_hand = self.init_invest
     return self.get_obs()
 
@@ -88,11 +87,6 @@ class TradingEnv(gym.Env):
     cur_val = self._get_val()
     reward = cur_val - prev_val
     done = self.cur_step == self.n_step - 1
-    if self.extra_reward < -1.0:
-      reward = -1000
-      done = True 
-
-    self.extra_reward = 0.0
     info = {'cur_val': cur_val}
     return self.get_obs(), reward, done, info
 
@@ -150,13 +144,10 @@ class TradingEnv(gym.Env):
     # two passes: sell first, then buy; might be naive in real-world settings
     if sell_index:
       for i in sell_index:
-        if self.stock_owned[i] == 0:
-          self.extra_reward += -0.5000000000000001
         self.cash_in_hand += self.stock_price[i] * self.stock_owned[i]
         self.stock_owned[i] = 0
     if buy_index:
       can_buy = True
-      old_stock_owned = np.copy(self.stock_owned)
       while can_buy:
         for i in buy_index:
           if self.cash_in_hand > self.stock_price[i]:
@@ -164,6 +155,3 @@ class TradingEnv(gym.Env):
             self.cash_in_hand -= self.stock_price[i]
           else:
             can_buy = False
-      for i in range(old_stock_owned.shape[0]):
-        if old_stock_owned[i] == self.stock_owned[i]:
-          self.extra_reward += -0.3333333333333334

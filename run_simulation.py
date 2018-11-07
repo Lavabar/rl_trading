@@ -16,7 +16,7 @@ if __name__ == '__main__':
                       help='number of episode to run')
   parser.add_argument('-b', '--batch_size', type=int, default=64,
                       help='batch size for experience replay')
-  parser.add_argument('-i', '--initial_invest', type=int, default=2000,
+  parser.add_argument('-i', '--initial_invest', type=int, default=200000,
                       help='initial investment amount')
   parser.add_argument('-m', '--mode', type=str, default='train',
                       help='either "train" or "test"')

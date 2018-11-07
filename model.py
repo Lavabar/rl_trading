@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, LSTM
+from keras.layers import Dense, LSTM, Dropout
 from keras.optimizers import Adam, RMSprop
 
 
@@ -14,6 +14,7 @@ def mlp(n_obs, n_action, n_hidden_layer=2,
   model.add(Dense(n_neuron_per_layer, input_dim=n_obs[0][0], activation=activation)) ## n_obs[0][0] for training and testing
   for _ in range(n_hidden_layer):
     model.add(Dense(n_neuron_per_layer // 2, activation=activation))
+    model.add(Dropout(0.3))
     n_neuron_per_layer = n_neuron_per_layer // 2
   model.add(Dense(n_action, activation='linear'))
   model.compile(loss=loss, optimizer=Adam(lr=0.0001, decay=0.00009))
